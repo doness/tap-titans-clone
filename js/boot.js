@@ -14,7 +14,7 @@ var bootState = {
       game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 
       // Add a blue color to the page, to hide the white borders we might have
-      document.body.style.backgroundColor = '#3498db';
+      document.body.style.backgroundColor = '#fff';
 
       // Set the min and max width/height of the game
       game.scale.minWidth = 250;

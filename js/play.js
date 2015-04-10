@@ -1,27 +1,72 @@
 var playState = {
 
   create: function() {
-    this.scoreLabel = game.add.text(30, 30, 'score: 0', { font: '18px Arial', fill: '#ffffff' });
-    game.global.score = 0;
+    game.global.taps = 0;
+    this.tapsLabel = game.add.text(10, 10, 'taps: ' + game.global.taps, { font: '14px Arial', fill: '#ffffff' });
 
-    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy');
-    this.enemy.scale.setTo(10, 10);
-    this.enemy.anchor.setTo(0.5, 1);
+    game.global.level = 1;
+    this.levelLabel = game.add.text(10, 30, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
+
+    this.enemyHPLabel = game.add.text(10, 50, 'enemyHP: ' + game.global.enemyHP, { font: '14px Arial', fill: '#ffffff' });
+    this.spawnEnemy();
 
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     this.player.anchor.setTo(0.5, 1);
 
-    game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCount, this);
-    game.input.onDown.add(this.tapCount, this);
+    game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
+    game.input.onDown.add(this.tapCheck, this);
   },
 
   update: function() {
 
   },
 
-  tapCount: function() {
-    game.global.score ++;
-    this.scoreLabel.text = 'score: ' + game.global.score;
+  spawnEnemy: function() {
+    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
+    this.enemy.scale.setTo(10, 10);
+    this.enemy.anchor.setTo(0.5, 1);
+    game.global.enemyHP = this.calculateEnemyHP();
+    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
+  },
+
+  calculateEnemyHP: function() {
+    // calculate enemy hp
+    var enemyHP = 100;
+    return enemyHP;
+  },
+
+  calculatePlayerDamage: function() {
+    // calculate player damage
+    var playerDamage = 30;
+    return Math.min(playerDamage, game.global.enemyHP);
+  },
+
+  displayDamage: function(damage) {
+    var damageLabel = game.add.text(game.world.centerX, game.world.centerY - 30, damage, { font: '14px Arial', fill: '#ffffff' });
+    damageLabel.anchor.setTo(0.5, 0.5);
+    game.add.tween(damageLabel).to({y: game.world.centerY - 160}, 1000).start();
+    // damageTween.onComplete( function() {
+    //   damageLabel.destroy();
+    // });
+  },
+
+  attackEnemy: function() {
+    if (this.enemy.alive) {
+      var playerDamage = this.calculatePlayerDamage();
+      this.displayDamage(playerDamage);
+      game.global.enemyHP -= playerDamage;
+      this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
+    }
+  },
+
+  tapCheck: function() {
+    game.global.taps ++;
+    this.tapsLabel.text = 'taps: ' + game.global.taps;
+    this.attackEnemy();
+    if (game.global.enemyHP === 0) {
+      this.enemy.kill();
+      // game.time.events.add(5000, this.spawnEnemy(), this);
+    }
   },
 
   startMenu: function() {

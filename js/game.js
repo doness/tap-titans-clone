@@ -1,9 +1,11 @@
 // Initialise Phaser
-var game = new Phaser.Game(375, 667, Phaser.CANVAS, 'gameDiv');
+var game = new Phaser.Game(375, 667, Phaser.AUTO, 'gameDiv');
 
 // Define our 'global' variable
 game.global = {
-    score: 0
+  taps: 0,
+  enemyHP: 0,
+  level: 0
 };
 
 // Add all the states
