@@ -1,8 +1,10 @@
 var loadState = {
 
   preload: function () {
-    // Load a new asset that we will use in the menu state
-    game.load.image('background', 'assets/background.png');
+
+    game.load.image('player', 'assets/player.png');
+    game.load.image('enemy', 'assets/enemy.png');
+
   },
 
   create: function() {
