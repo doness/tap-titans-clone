@@ -67,7 +67,6 @@ var playState = {
     this.attackEnemy();
     if (game.global.enemyHP === 0) {
       this.enemy.kill();
-      console.log("Killed!");
       game.time.events.add(200, this.spawnEnemy, this);
     }
   },
