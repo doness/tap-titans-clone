@@ -64,10 +64,12 @@ var playState = {
   tapCheck: function() {
     game.global.taps ++;
     this.tapsLabel.text = 'taps: ' + game.global.taps;
-    this.attackEnemy();
-    if (game.global.enemyHP === 0) {
-      this.enemy.kill();
-      game.time.events.add(200, this.spawnEnemy, this);
+    if (this.enemy.alive) {
+      this.attackEnemy();
+      if (game.global.enemyHP === 0) {
+        this.enemy.kill();
+        game.time.events.add(500, this.spawnEnemy, this);
+      }
     }
   },
 
