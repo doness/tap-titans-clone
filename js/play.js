@@ -44,10 +44,12 @@ var playState = {
   displayDamage: function(damage) {
     var damageLabel = game.add.text(game.world.centerX, game.world.centerY - 30, damage, { font: '14px Arial', fill: '#ffffff' });
     damageLabel.anchor.setTo(0.5, 0.5);
-    game.add.tween(damageLabel).to({y: game.world.centerY - 160}, 1000).start();
-    // damageTween.onComplete( function() {
-    //   damageLabel.destroy();
-    // });
+    var damageTween = game.add.tween(damageLabel);
+    damageTween.to({y: game.world.centerY - 160}, 1000);
+    damageTween.start();
+    damageTween.onComplete.add( function() {
+      damageLabel.destroy();
+    }, this);
   },
 
   attackEnemy: function() {
