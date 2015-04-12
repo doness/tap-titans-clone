@@ -69,7 +69,7 @@ var playState = {
   },
 
   dropCoins: function() {
-    // implement drop coins
+    // implement drop coinsLabel
   },
 
   enemyDie: function() {
