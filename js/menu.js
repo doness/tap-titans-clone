@@ -1,10 +1,8 @@
 var menuState = {
 
   create: function() {
-    // Display the name of the game
     var nameLabel = game.add.text(game.world.centerX, -50, 'Tap Titans Clone', { font: '40px Arial', fill: '#ffffff' });
     nameLabel.anchor.setTo(0.5, 0.5);
-
     game.add.tween(nameLabel).to({y: 80}, 1000).easing(Phaser.Easing.Bounce.Out).start();
 
     // If 'bestScore' is not defined
@@ -34,21 +32,15 @@ var menuState = {
     }
     var startLabel = game.add.text(game.world.centerX, game.world.height-80, text2, { font: '25px Arial', fill: '#ffffff' });
     startLabel.anchor.setTo(0.5, 0.5);
-
     game.add.tween(startLabel).to({angle: -2}, 500).to({angle: 2}, 500).loop().start();
 
-    // Create a new Phaser keyboard variable: the up arrow key
     var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-
-    // When the 'upKey' is pressed, it will call the 'start' function once
     upKey.onDown.addOnce(this.start, this);
-
     game.input.onDown.addOnce(this.start, this);
 
   },
 
   start: function() {
-    // Start the actual game
     game.state.start('play');
   },
 };
