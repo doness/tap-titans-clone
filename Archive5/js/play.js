@@ -16,6 +16,12 @@ var playState = {
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     this.player.anchor.setTo(0.5, 1);
 
+    this.emitter = game.add.emitter(0, 0, 15);
+    this.emitter.makeParticles('pixel');
+    this.emitter.setYSpeed(-150, 150);
+    this.emitter.setXSpeed(-150, 150);
+    this.emitter.gravity = 0;
+
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
     game.input.onDown.add(this.tapCheck, this);
   },
@@ -84,8 +90,9 @@ var playState = {
   },
 
   displayTap: function(x, y) {
-    game.global.taps ++;
-    this.tapsLabel.text = 'taps: ' + game.global.taps;
+    // this.emitter.x = x;
+    // this.emitter.y = y;
+    // this.emitter.start(true, 600, null, 15);
     var taplocationLabel = game.add.text(x, y, x + ',' + y, { font: '14px Arial', fill: '#ffffff' });
     taplocationLabel.anchor.setTo(0.5, 0.5);
     var taplocationTween = game.add.tween(taplocationLabel);
@@ -98,6 +105,8 @@ var playState = {
 
   tapCheck: function() {
     this.displayTap(game.input.x,game.input.y);
+    game.global.taps ++;
+    this.tapsLabel.text = 'taps: ' + game.global.taps;
     if (this.enemy.alive) {
       this.attackEnemy();
       if (game.global.enemyHP === 0) {
