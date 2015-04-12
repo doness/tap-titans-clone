@@ -4,7 +4,8 @@ game.global = {
   taps: 0,
   enemyHP: 0,
   level: 0,
-  enemyNumber: 0
+  enemyNumber: 0,
+  coins: 0
 };
 
 game.state.add('boot', bootState);
