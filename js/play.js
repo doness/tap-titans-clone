@@ -21,7 +21,7 @@ var playState = {
   },
 
   update: function() {
-
+    this.coinsLabel.text = 'coins: ' + game.global.coins;
   },
 
   spawnEnemy: function() {
@@ -68,11 +68,33 @@ var playState = {
     this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
   },
 
-  dropCoins: function() {
-    // implement drop coinsLabel
+  removeCoin: function(item) {
+    var coin = 10;
+    var coinLabel = game.add.text(item.x, item.y, coin, { font: '14px Arial', fill: 'orange' });
+    coinLabel.anchor.setTo(0.5, 0.5);
+    var coinTween = game.add.tween(coinLabel);
+    coinTween.to({y: item.y - 50}, 1000);
+    coinTween.start();
+    coinTween.onComplete.add( function() {
+      coinLabel.destroy();
+    }, this);
+    game.global.coins += coin;
+    // this.coinsLabel.text = 'coins: ' + game.global.coins;
+    item.kill();
   },
 
-  enemyDie: function() {
+  dropCoins: function() {
+    // implement drop coins
+    coins = game.add.group();
+    var coinsNumber = 3;
+    for (var i = 0; i < coinsNumber; i++) {
+      var coin = coins.create(game.world.randomX, game.world.randomY, 'coin', 0);
+    }
+    coins.setAll('inputEnabled', true);
+    coins.callAll('events.onInputDown.add', 'events.onInputDown', this.removeCoin);
+  },
+
+  removeEnemy: function() {
     this.enemy.kill();
     this.dropCoins();
     // implement check for 5th and 10th enemy
@@ -106,7 +128,7 @@ var playState = {
     if (this.enemy.alive) {
       this.attackEnemy();
       if (game.global.enemyHP === 0) {
-        this.enemyDie();
+        this.removeEnemy();
       }
     }
   },
