@@ -11,12 +11,34 @@ var playState = {
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     this.player.anchor.setTo(0.5, 1);
 
+    this.coins = game.add.group();
+    this.coins.enableBody = true;
+    this.coins.createMultiple(500, "coin");
+    this.coins.setAll('anchor.x', 0.5);
+    this.coins.setAll('anchor.y', 1);
+    this.coins.setAll('checkWorldBounds', true);
+
+    this.ground = game.add.sprite(0, game.world.centerY, 'ground');
+    this.ground.anchor.setTo(0, 0);
+    game.physics.arcade.enable(this.ground);
+    this.ground.body.immovable = true;
+
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
     game.input.onDown.add(this.tapCheck, this);
   },
 
   update: function() {
     this.coinsLabel.text = 'coins: ' + game.global.coins;
+    game.physics.arcade.collide(this.coins, this.ground, this.stopCoinSlide());
+
+  },
+
+  stopCoinSlide: function(){
+    this.coins.forEachAlive(function(coin){
+      if (coin.body.y + coin.body.height > game.world.centerY - 1){
+        coin.body.velocity.x = 0;
+      }
+    }, this);
   },
 
   spawnEnemy: function() {
@@ -95,19 +117,24 @@ var playState = {
   },
 
   dropCoins: function() {
-    // implement drop coins
-    coins = game.add.group();
     var coinsNumber = 3;
     for (var i = 0; i < coinsNumber; i++) {
-      var coin = coins.create(game.world.randomX, game.world.randomY, 'coin', 0);
+      var coin = this.coins.getFirstDead();
+      coin.body.collideWorldBounds = true;
+      coin.anchor.setTo(0.5, 1);
+      coin.reset(this.enemy.x, this.enemy.y - this.enemy.height / 2);
+      game.physics.arcade.enable(coin);
+      coin.body.gravity.y = 1000;
+      coin.body.velocity.y = -500;
+      coin.body.velocity.x = Math.random() * 100 * util.plusOrMinus();
     }
-    coins.setAll('inputEnabled', true);
-    coins.callAll('events.onInputDown.add', 'events.onInputDown', this.removeCoin);
+    this.coins.setAll('inputEnabled', true);
+    this.coins.callAll('events.onInputDown.add', 'events.onInputDown', this.removeCoin);
   },
 
   removeEnemy: function() {
-    this.enemy.kill();
     this.dropCoins();
+    this.enemy.kill();
     var totalEnemy = this.calculateTotalEnemy();
     if (game.global.enemyNumber === totalEnemy) {
       game.global.level ++;
