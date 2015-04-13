@@ -2,19 +2,25 @@ var playState = {
 
   create: function() {
     game.global.taps = 0;
-    game.global.level = 1;
-    game.global.enemyNumber = 1;
-    game.global.coins = 0;
-
     this.tapsLabel = game.add.text(10, 30, 'taps: ' + game.global.taps, { font: '14px Arial', fill: '#ffffff' });
-    this.levelLabel = game.add.text(10, 50, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
-    this.enemyNumberLabel = game.add.text(10, 70, game.global.enemyNumber + ' / ' + this.calculateTotalEnemy(), { font: '14px Arial', fill: '#ffffff' });
-    this.enemyHPLabel = game.add.text(10, 90, 'enemyHP: ' + game.global.enemyHP, { font: '14px Arial', fill: '#ffffff' });
-    this.coinsLabel = game.add.text(10, 110, 'coins: ' + game.global.coins, { font: '14px Arial', fill: '#ffffff' });
 
+    game.global.level = 1;
+    this.levelLabel = game.add.text(10, 50, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
+
+    game.global.enemyNumber = 1;
+    this.enemyNumberLabel = game.add.text(10, 70, game.global.enemyNumber + ' / ' + this.calculateTotalEnemy(), { font: '14px Arial', fill: '#ffffff' });
+
+    this.enemyHPLabel = game.add.text(10, 90, 'enemyHP: ' + game.global.enemyHP, { font: '14px Arial', fill: '#ffffff' });
     this.spawnEnemy();
+
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     this.player.anchor.setTo(0.5, 1);
+
+    this.emitter = game.add.emitter(0, 0, 15);
+    this.emitter.makeParticles('pixel');
+    this.emitter.setYSpeed(-150, 150);
+    this.emitter.setXSpeed(-150, 150);
+    this.emitter.gravity = 0;
 
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
     game.input.onDown.add(this.tapCheck, this);
@@ -33,19 +39,19 @@ var playState = {
   },
 
   calculateTotalEnemy: function() {
-    // implement calculate total enemy
+    // calculate total enemy
     var totalEnemy = 10;
     return totalEnemy;
   },
 
   calculateEnemyHP: function() {
-    // implement calculate enemy hp
+    // calculate enemy hp
     var enemyHP = 100;
     return enemyHP;
   },
 
   calculatePlayerDamage: function() {
-    // implement calculate player damage
+    // calculate player damage
     var playerDamage = 30;
     return Math.min(playerDamage, game.global.enemyHP);
   },
@@ -68,14 +74,9 @@ var playState = {
     this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
   },
 
-  dropCoins: function() {
-    // implement drop coinsLabel
-  },
-
   enemyDie: function() {
     this.enemy.kill();
-    this.dropCoins();
-    // implement check for 5th and 10th enemy
+    // drop coins
     if (game.global.enemyNumber === this.calculateTotalEnemy()) {
       game.global.level ++;
       this.levelLabel.text = 'level: ' + game.global.level;
@@ -89,8 +90,9 @@ var playState = {
   },
 
   displayTap: function(x, y) {
-    game.global.taps ++;
-    this.tapsLabel.text = 'taps: ' + game.global.taps;
+    // this.emitter.x = x;
+    // this.emitter.y = y;
+    // this.emitter.start(true, 600, null, 15);
     var taplocationLabel = game.add.text(x, y, x + ',' + y, { font: '14px Arial', fill: '#ffffff' });
     taplocationLabel.anchor.setTo(0.5, 0.5);
     var taplocationTween = game.add.tween(taplocationLabel);
@@ -103,6 +105,8 @@ var playState = {
 
   tapCheck: function() {
     this.displayTap(game.input.x,game.input.y);
+    game.global.taps ++;
+    this.tapsLabel.text = 'taps: ' + game.global.taps;
     if (this.enemy.alive) {
       this.attackEnemy();
       if (game.global.enemyHP === 0) {
