@@ -29,16 +29,18 @@ var playState = {
 
   update: function() {
     this.coinsLabel.text = 'coins: ' + game.global.coins;
-    game.physics.arcade.collide(this.coins, this.ground, this.stopCoinSlide());
+    game.physics.arcade.collide(this.ground, this.coins, this.bounce, null, this);
 
   },
 
-  stopCoinSlide: function(){
-    this.coins.forEachAlive(function(coin){
-      if (coin.body.y + coin.body.height > game.world.centerY - 1){
-        coin.body.velocity.x = 0;
-      }
-    }, this);
+  bounce: function(ground, obj){
+    obj.body.velocity.y = -250;
+    obj.body.velocity.x = obj.body.velocity.x * 0.6;
+    game.time.events.add(330,function() {
+      obj.body.velocity.x = 0;
+      obj.body.velocity.y = 0;
+      obj.body.gravity.y = 0;
+    });
   },
 
   spawnEnemy: function() {
@@ -124,7 +126,7 @@ var playState = {
       coin.anchor.setTo(0.5, 1);
       coin.reset(this.enemy.x, this.enemy.y - this.enemy.height / 2);
       game.physics.arcade.enable(coin);
-      coin.body.gravity.y = 1000;
+      coin.body.gravity.y = 1500;
       coin.body.velocity.y = -500;
       coin.body.velocity.x = Math.random() * 100 * util.plusOrMinus();
     }
