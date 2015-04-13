@@ -33,26 +33,18 @@ var playState = {
   },
 
   spawnEnemy: function() {
+    var totalEnemy = this.calculateTotalEnemy();
+    var enemyType = game.global.enemyNumber === totalEnemy ? game.global.level % 5 === 0 ? 'boss' : 'mini-boss' : 'titan';
     this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
-    this.enemy.scale.setTo(7, 7);
     this.enemy.anchor.setTo(0.5, 1);
-    game.global.enemyHP = this.calculateEnemyHP();
-    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
-  },
-
-  spawnMiniBoss: function() {
-    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
-    this.enemy.scale.setTo(10, 10);
-    this.enemy.anchor.setTo(0.5, 1);
-    game.global.enemyHP = this.calculateEnemyHP();
-    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
-  },
-
-  spawnBoss: function() {
-    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
-    this.enemy.scale.setTo(10, 13);
-    this.enemy.anchor.setTo(0.5, 1);
-    game.global.enemyHP = this.calculateEnemyHP();
+    if (enemyType === 'boss'){
+      this.enemy.scale.setTo(10, 13);
+    } else if (enemyType === 'mini-boss'){
+      this.enemy.scale.setTo(10, 10);
+    } else {
+      this.enemy.scale.setTo(7, 7);
+    }
+    game.global.enemyHP = this.calculateEnemyHP(enemyType);
     this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
   },
 
@@ -62,10 +54,16 @@ var playState = {
     return totalEnemy;
   },
 
-  calculateEnemyHP: function() {
+  calculateEnemyHP: function(type) {
     // implement calculate enemy hp
-    var enemyHP = 100;
-    return enemyHP;
+    var hpModifier = [2,4,6,7,10];
+    var titanHP = Math.floor( 18.5 * Math.pow(1.57, Math.min(game.global.level, 156)) * Math.pow(1.17, Math.max(game.global.level - 156, 0)) );
+    var bossHP = titanHP * hpModifier[(game.global.level - 1) % 5];
+    if (type === "titan"){
+      return titanHP;
+    } else {
+      return bossHP;
+    }
   },
 
   calculatePlayerDamage: function() {
@@ -135,13 +133,7 @@ var playState = {
       game.global.enemyNumber = 1;
       game.time.events.add(500, this.spawnEnemy, this);
     } else {
-      if (game.global.enemyNumber === totalEnemy - 1 && game.global.level % 10 === 9) {
-        game.time.events.add(500, this.spawnBoss, this);
-      } else if (game.global.enemyNumber === totalEnemy - 1) {
-        game.time.events.add(500, this.spawnMiniBoss, this);
-      } else {
-        game.time.events.add(500, this.spawnEnemy, this);
-      }
+      game.time.events.add(500, this.spawnEnemy, this);
       game.global.enemyNumber ++;
     }
     this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
