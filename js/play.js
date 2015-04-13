@@ -46,7 +46,7 @@ var playState = {
 
   calculatePlayerDamage: function() {
     // implement calculate player damage
-    var playerDamage = 30;
+    var playerDamage = 100;
     return Math.min(playerDamage, game.global.enemyHP);
   },
 
@@ -97,16 +97,22 @@ var playState = {
   removeEnemy: function() {
     this.enemy.kill();
     this.dropCoins();
-    // implement check for 5th and 10th enemy
-    if (game.global.enemyNumber === this.calculateTotalEnemy()) {
+    var totalEnemy = this.calculateTotalEnemy();
+    if (game.global.enemyNumber === totalEnemy) {
       game.global.level ++;
       this.levelLabel.text = 'level: ' + game.global.level;
       game.global.enemyNumber = 1;
-      this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
     } else {
+      if (game.global.enemyNumber === totalEnemy - 1) {
+        if (game.global.level % 10 === 9)  {
+          console.log('boss');
+        } else {
+          console.log('mini boss');
+        }
+      }
       game.global.enemyNumber ++;
-      this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
     }
+    this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
     game.time.events.add(500, this.spawnEnemy, this);
   },
 
