@@ -29,15 +29,7 @@ var playState = {
 
   update: function() {
     this.coinsLabel.text = 'coins: ' + game.global.coins;
-    game.physics.arcade.collide(this.coins, this.ground, this.stopCoinSlide());
-  },
-
-  stopCoinSlide: function() {
-    this.coins.forEachAlive(function(coin){
-      if (coin.body.y + coin.body.height > game.world.centerY - 1){
-        coin.body.velocity.x = 0;
-      }
-    }, this);
+    game.physics.arcade.collide(this.ground, this.coins);
   },
 
   spawnEnemy: function() {
@@ -124,10 +116,10 @@ var playState = {
       coin.reset(this.enemy.x, this.enemy.y - this.enemy.height / 2);
       game.physics.arcade.enable(coin);
       coin.body.bounce.set(0.3);
-      coin.body.friction.set(0.5);
-      coin.body.gravity.y = 1000;
+      coin.body.drag.set(80);
+      coin.body.gravity.y = 1500;
       coin.body.velocity.y = -500;
-      coin.body.velocity.x = Math.random() * 100 * util.plusOrMinus();
+      coin.body.velocity.x = Math.random() * 150 * util.plusOrMinus();
     }
     this.coins.setAll('inputEnabled', true);
     this.coins.callAll('events.onInputDown.add', 'events.onInputDown', this.removeCoin);
