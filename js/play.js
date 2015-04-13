@@ -30,10 +30,9 @@ var playState = {
   update: function() {
     this.coinsLabel.text = 'coins: ' + game.global.coins;
     game.physics.arcade.collide(this.coins, this.ground, this.stopCoinSlide());
-
   },
 
-  stopCoinSlide: function(){
+  stopCoinSlide: function() {
     this.coins.forEachAlive(function(coin){
       if (coin.body.y + coin.body.height > game.world.centerY - 1){
         coin.body.velocity.x = 0;
@@ -124,6 +123,8 @@ var playState = {
       coin.anchor.setTo(0.5, 1);
       coin.reset(this.enemy.x, this.enemy.y - this.enemy.height / 2);
       game.physics.arcade.enable(coin);
+      coin.body.bounce.set(0.3);
+      coin.body.friction.set(0.5);
       coin.body.gravity.y = 1000;
       coin.body.velocity.y = -500;
       coin.body.velocity.x = Math.random() * 100 * util.plusOrMinus();
