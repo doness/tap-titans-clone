@@ -1,11 +1,6 @@
 var playState = {
 
   create: function() {
-    game.global.taps = 0;
-    game.global.level = 1;
-    game.global.enemyNumber = 1;
-    game.global.coins = 0;
-
     this.tapsLabel = game.add.text(10, 30, 'taps: ' + game.global.taps, { font: '14px Arial', fill: '#ffffff' });
     this.levelLabel = game.add.text(10, 50, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
     this.enemyNumberLabel = game.add.text(10, 70, game.global.enemyNumber + ' / ' + this.calculateTotalEnemy(), { font: '14px Arial', fill: '#ffffff' });
@@ -27,6 +22,22 @@ var playState = {
   spawnEnemy: function() {
     this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
     this.enemy.scale.setTo(7, 7);
+    this.enemy.anchor.setTo(0.5, 1);
+    game.global.enemyHP = this.calculateEnemyHP();
+    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
+  },
+
+  spawnMiniBoss: function() {
+    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
+    this.enemy.scale.setTo(10, 10);
+    this.enemy.anchor.setTo(0.5, 1);
+    game.global.enemyHP = this.calculateEnemyHP();
+    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
+  },
+
+  spawnBoss: function() {
+    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
+    this.enemy.scale.setTo(10, 13);
     this.enemy.anchor.setTo(0.5, 1);
     game.global.enemyHP = this.calculateEnemyHP();
     this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
@@ -68,19 +79,19 @@ var playState = {
     this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
   },
 
-  removeCoin: function(item) {
-    var coin = 10;
-    var coinLabel = game.add.text(item.x, item.y, coin, { font: '14px Arial', fill: 'orange' });
+  removeCoin: function(coin) {
+    var coinValue = 10;
+    var coinLabel = game.add.text(coin.x, coin.y, coinValue, { font: '14px Arial', fill: 'orange' });
     coinLabel.anchor.setTo(0.5, 0.5);
     var coinTween = game.add.tween(coinLabel);
-    coinTween.to({y: item.y - 50}, 1000);
+    coinTween.to({y: coin.y - 50}, 500);
     coinTween.start();
     coinTween.onComplete.add( function() {
       coinLabel.destroy();
     }, this);
-    game.global.coins += coin;
+    game.global.coins += coinValue;
     // this.coinsLabel.text = 'coins: ' + game.global.coins;
-    item.kill();
+    coin.kill();
   },
 
   dropCoins: function() {
@@ -97,17 +108,23 @@ var playState = {
   removeEnemy: function() {
     this.enemy.kill();
     this.dropCoins();
-    // implement check for 5th and 10th enemy
-    if (game.global.enemyNumber === this.calculateTotalEnemy()) {
+    var totalEnemy = this.calculateTotalEnemy();
+    if (game.global.enemyNumber === totalEnemy) {
       game.global.level ++;
       this.levelLabel.text = 'level: ' + game.global.level;
       game.global.enemyNumber = 1;
-      this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
+      game.time.events.add(500, this.spawnEnemy, this);
     } else {
+      if (game.global.enemyNumber === totalEnemy - 1 && game.global.level % 10 === 9) {
+        game.time.events.add(500, this.spawnBoss, this);
+      } else if (game.global.enemyNumber === totalEnemy - 1) {
+        game.time.events.add(500, this.spawnMiniBoss, this);
+      } else {
+        game.time.events.add(500, this.spawnEnemy, this);
+      }
       game.global.enemyNumber ++;
-      this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
     }
-    game.time.events.add(500, this.spawnEnemy, this);
+    this.enemyNumberLabel.text = game.global.enemyNumber + ' / ' + this.calculateTotalEnemy();
   },
 
   displayTap: function(x, y) {
@@ -116,7 +133,7 @@ var playState = {
     var taplocationLabel = game.add.text(x, y, x + ',' + y, { font: '14px Arial', fill: '#ffffff' });
     taplocationLabel.anchor.setTo(0.5, 0.5);
     var taplocationTween = game.add.tween(taplocationLabel);
-    taplocationTween.to({y: y - 30}, 1000);
+    taplocationTween.to({y: y - 30}, 500);
     taplocationTween.start();
     taplocationTween.onComplete.add( function() {
       taplocationLabel.destroy();
