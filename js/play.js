@@ -1,6 +1,11 @@
 var playState = {
 
   create: function() {
+    this.ground = game.add.sprite(0, game.world.centerY, 'ground');
+    this.ground.anchor.setTo(0, 0);
+    game.physics.arcade.enable(this.ground);
+    this.ground.body.immovable = true;
+
     this.emptyHpBar = game.add.sprite(game.world.centerX, 45, 'emptyHpBar');
     this.fullHpBar = game.add.sprite(game.world.centerX - 100, 45, 'fullHpBar');
     this.emptyHpBar.anchor.setTo(0.5, 0);
@@ -17,39 +22,61 @@ var playState = {
     this.enemyHPLabel.anchor.setTo(0.5, 0);
     this.coinsLabel.anchor.setTo(0.5, 0);
 
+    this.enemyGroup = game.add.group();
     this.spawnEnemy();
 
     this.coins = game.add.group();
     this.coins.enableBody = true;
-    this.coins.createMultiple(500, "coin");
+    this.coins.createMultiple(100, "coin");
     this.coins.setAll('anchor.x', 0.5);
     this.coins.setAll('anchor.y', 1);
     this.coins.setAll('checkWorldBounds', true);
 
-    this.ground = game.add.sprite(0, game.world.centerY, 'ground');
-    this.ground.anchor.setTo(0, 0);
-    game.physics.arcade.enable(this.ground);
-    this.ground.body.immovable = true;
+    this.menuGroup = game.add.group();
 
-    this.button1 = game.add.sprite(0, game.world.height, 'button1');
-    this.button1.inputEnabled = true;
-    this.button1.anchor.setTo(0, 1);
-    // this.button1.events.onInputDown.add(this.fap(), this);
-    this.button2 = game.add.sprite(this.button1.width + 5, game.world.height, 'button2');
-    this.button2.inputEnabled = true;
-    this.button2.anchor.setTo(0, 1);
-    this.button3 = game.add.sprite(this.button1.width*2 + 10, game.world.height, 'button3');
-    this.button3.inputEnabled = true;
-    this.button3.anchor.setTo(0, 1);
-    this.button4 = game.add.sprite(this.button1.width*3 + 15, game.world.height, 'button4');
-    this.button4.inputEnabled = true;
-    this.button4.anchor.setTo(0, 1);
+    this.menuButtons = game.add.group();
+    for (var i = 0; i < 4; i++ ) {
+      var button = game.add.sprite(90*i + 5*i, game.world.height, 'button' + i);
+      button.anchor.setTo(0, 1);
+      this.menuButtons.add(button);
+    }
+    this.menuButtons.setAll('inputEnabled', true);
+    this.menuButtons.callAll('events.onInputDown.add', 'events.onInputDown', this.displayMenu, this);
 
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     this.player.anchor.setTo(0.5, 1);
 
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
     game.input.onDown.add(this.tapCheck, this);
+  },
+
+  removeMenu: function() {
+    game.add.tween(this.menu).to({y: game.world.height}, 300).start();
+    this.menu.kill();
+    this.menuCloseButton.kill();
+    // this.heroNameLabel.kill();
+    // this.skillLabel.kill();
+  },
+
+  displayMenu: function(item) {
+    console.log(item.key);
+    this.menu = game.add.sprite(game.world.centerX, game.world.height, 'menu');
+    this.menuGroup.add(this.menu);
+    this.menu.anchor.setTo(0.5, 0);
+    this.menuCloseButton = game.add.sprite(game.world.width, game.world.centerY, 'menuCloseButton');
+    this.menuCloseButton.anchor.setTo(1, 0);
+    this.menuCloseButton.inputEnabled = true;
+    this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
+    this.heroNameLabel = game.add.text(game.world.centerX, game.world.centerY + 40, game.global.player.name + ' lvl: ' + game.global.player.level, { font: '14px Arial', fill: '#ffffff' });
+    this.heroNameLabel.anchor.setTo(0.5, 0.5);
+    for (var i = 0; i < 6; i++) {
+      var text = 'skill ' + i + '  lvl ' + game.global.player.skillLevel[i];
+      this.skillLabel = game.add.text(game.world.centerX, game.world.centerY + 60 + i * 20, text, { font: '14px Arial', fill: '#ffffff' });
+      this.skillLabel.anchor.setTo(0.5, 0.5);
+    }
+    game.add.tween(this.menu).to({y: game.world.centerY}, 300).start();
+    // game.add.tween(this.menuGroup._container).to({y: game.world.centerY}, 300).start();
+    console.log(this.menuGroup.position);
   },
 
   update: function() {
@@ -61,7 +88,8 @@ var playState = {
   spawnEnemy: function() {
     var totalEnemy = this.calculateTotalEnemy();
     var enemyType = game.global.enemyNumber === totalEnemy ? game.global.level % 5 === 0 ? 'boss' : 'mini-boss' : 'titan';
-    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy').sendToBack();
+    this.enemy = game.add.sprite(game.world.centerX, game.world.centerY, 'enemy');
+    this.enemyGroup.add(this.enemy);
     this.enemy.anchor.setTo(0.5, 1);
     if (enemyType === 'boss'){
       this.enemy.scale.setTo(10, 13);
@@ -83,7 +111,6 @@ var playState = {
   },
 
   calculateEnemyHP: function(type) {
-    // implement calculate enemy hp
     var hpModifier = [2,4,6,7,10];
     var titanHP = Math.floor( 18.5 * Math.pow(1.57, Math.min(game.global.level, 156)) * Math.pow(1.17, Math.max(game.global.level - 156, 0)) );
     var bossHP = titanHP * hpModifier[(game.global.level - 1) % 5];
