@@ -6,13 +6,13 @@ var playState = {
     this.levelLabel       = game.add.text(game.world.centerX, 30, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
     this.enemyHPLabel     = game.add.text(game.world.centerX, 50, 'enemyHP: ' + game.global.enemyHP, { font: '14px Arial', fill: '#ffffff' });
     this.coinsLabel       = game.add.text(game.world.centerX, 70, 'coins: ' + game.global.coins, { font: '14px Arial', fill: '#ffffff' });
+    this.coinsLabelIcon   = game.add.sprite(this.coinsLabel.x - 45, this.coinsLabel.y, 'coin');
+
     this.levelLabel.anchor.setTo(0.5, 0);
     this.enemyHPLabel.anchor.setTo(0.5, 0);
     this.coinsLabel.anchor.setTo(0.5, 0);
 
     this.spawnEnemy();
-    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
-    this.player.anchor.setTo(0, 1);
 
     this.coins = game.add.group();
     this.coins.enableBody = true;
@@ -25,6 +25,19 @@ var playState = {
     this.ground.anchor.setTo(0, 0);
     game.physics.arcade.enable(this.ground);
     this.ground.body.immovable = true;
+
+    this.button1 = game.add.sprite(5, 600, 'button1');
+    this.button1.inputEnabled = true;
+    // this.button1.events.onInputDown.add(this.fap(), this);
+    this.button2 = game.add.sprite(110, 600, 'button2');
+    this.button2.inputEnabled = true;
+    this.button3 = game.add.sprite(215, 600, 'button3');
+    this.button3.inputEnabled = true;
+    this.button4 = game.add.sprite(320, 600, 'button4');
+    this.button4.inputEnabled = true;
+
+    this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
+    this.player.anchor.setTo(0.5, 1);
 
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
     game.input.onDown.add(this.tapCheck, this);
@@ -78,10 +91,10 @@ var playState = {
   },
 
   displayDamage: function(damage) {
-    var damageLabel = game.add.text(game.world.centerX, game.world.centerY - 30, damage, { font: '14px Arial', fill: '#ffffff' });
+    var damageLabel = game.add.text(game.world.centerX, game.world.centerY - 30, damage, { font: '20px Arial', fill: '#ffffff' });
     damageLabel.anchor.setTo(0.5, 0.5);
     var damageTween = game.add.tween(damageLabel);
-    damageTween.to({y: game.world.centerY - 160}, 1000);
+    damageTween.to({y: game.world.centerY - 160, alpha: 0}, 1500);
     damageTween.start();
     damageTween.onComplete.add( function() {
       damageLabel.destroy();
@@ -96,19 +109,21 @@ var playState = {
   },
 
   removeCoin: function(coin) {
-    // var coinValue = 10;
-    var coinLabel = game.add.text(coin.x, coin.y, coin.gold, { font: '14px Arial', fill: 'orange' });
+    var coinLabel = game.add.text(coin.x, coin.y - 30, coin.gold, { font: '22px Arial', fill: 'orange' });
     coinLabel.anchor.setTo(0.5, 0.5);
     var coinTween = game.add.tween(coinLabel);
-    coinTween.to({y: coin.y - 50}, 500);
+    coinTween.to({y: coin.y - 100, alpha: 0}, 1500);
     coinTween.start();
     coinTween.onComplete.add( function() {
       coinLabel.destroy();
     }, this);
-    // game.global.coins += coinValue;
-    game.global.coins += coin.gold;
-    // this.coinsLabel.text = 'coins: ' + game.global.coins;
-    coin.kill();
+    var coinAnimation = game.add.tween(coin);
+    coinAnimation.to({x: 150, y: 78}, 1000);
+    coinAnimation.start();
+    coinAnimation.onComplete.add( function(){
+      game.global.coins += coin.gold;
+      coin.kill();
+    }, this);
   },
 
   dropCoins: function() {
@@ -125,6 +140,7 @@ var playState = {
       coin.body.velocity.y = -500;
       coin.body.velocity.x = Math.random() * 150 * util.plusOrMinus();
       coin.gold = Math.ceil( game.global.enemyHPTotal * (0.02 + (0.00045 * Math.min(game.global.level, 150))) );
+      game.time.events.add(3000, this.removeCoin, this, coin);
     }
     this.coins.setAll('inputEnabled', true);
     this.coins.callAll('events.onInputDown.add', 'events.onInputDown', this.removeCoin);
@@ -149,7 +165,7 @@ var playState = {
   displayTap: function(x, y) {
     game.global.taps ++;
     this.tapsLabel.text = 'taps: ' + game.global.taps;
-    var taplocationLabel = game.add.text(x, y, x + ',' + y, { font: '14px Arial', fill: '#ffffff' });
+    var taplocationLabel = game.add.text(x, y, x + ',' + y, { font: '12px Arial', fill: '#ffffff' });
     taplocationLabel.anchor.setTo(0.5, 0.5);
     var taplocationTween = game.add.tween(taplocationLabel);
     taplocationTween.to({y: y - 30}, 500);
