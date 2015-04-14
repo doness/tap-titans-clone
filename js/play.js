@@ -31,15 +31,19 @@ var playState = {
     game.physics.arcade.enable(this.ground);
     this.ground.body.immovable = true;
 
-    this.button1 = game.add.sprite(5, 600, 'button1');
+    this.button1 = game.add.sprite(0, game.world.height, 'button1');
     this.button1.inputEnabled = true;
+    this.button1.anchor.setTo(0, 1);
     // this.button1.events.onInputDown.add(this.fap(), this);
-    this.button2 = game.add.sprite(110, 600, 'button2');
+    this.button2 = game.add.sprite(this.button1.width + 5, game.world.height, 'button2');
     this.button2.inputEnabled = true;
-    this.button3 = game.add.sprite(215, 600, 'button3');
+    this.button2.anchor.setTo(0, 1);
+    this.button3 = game.add.sprite(this.button1.width*2 + 10, game.world.height, 'button3');
     this.button3.inputEnabled = true;
-    this.button4 = game.add.sprite(320, 600, 'button4');
+    this.button3.anchor.setTo(0, 1);
+    this.button4 = game.add.sprite(this.button1.width*3 + 15, game.world.height, 'button4');
     this.button4.inputEnabled = true;
+    this.button4.anchor.setTo(0, 1);
 
     this.player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     this.player.anchor.setTo(0.5, 1);
