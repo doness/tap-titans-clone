@@ -10,12 +10,8 @@ game.global = {
   coins: 0,
   player: {
     name: 'hero',
-    skill1: 0,
-    skill2: 0,
-    skill3: 0,
-    skill4: 0,
-    skill5: 0,
-    skill6: 0,
+    level: 1,
+    skillLevel: [0, 0, 0, 0, 0, 0]
   }
 };
 
