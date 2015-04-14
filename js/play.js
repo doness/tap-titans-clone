@@ -2,7 +2,9 @@ var playState = {
 
   create: function() {
     this.emptyHpBar = game.add.sprite(game.world.centerX, 45, 'emptyHpBar');
+    this.fullHpBar = game.add.sprite(game.world.centerX - 100, 45, 'fullHpBar');
     this.emptyHpBar.anchor.setTo(0.5, 0);
+    this.fullHpBar.anchor.setTo(0, 0);
 
     this.tapsLabel        = game.add.text(10, 30, 'taps: ' + game.global.taps, { font: '14px Arial', fill: '#ffffff' });
     this.enemyNumberLabel = game.add.text(300, 30, game.global.enemyNumber + ' / ' + this.calculateTotalEnemy(), { font: '14px Arial', fill: '#ffffff' });
@@ -49,6 +51,7 @@ var playState = {
   update: function() {
     this.coinsLabel.text = 'coins: ' + game.global.coins;
     game.physics.arcade.collide(this.ground, this.coins);
+    this.fullHpBar.scale.setTo(game.global.enemyHP / game.global.enemyHPTotal, 1);
   },
 
   spawnEnemy: function() {
@@ -89,7 +92,7 @@ var playState = {
 
   calculatePlayerDamage: function() {
     // implement calculate player damage
-    var playerDamage = 30;
+    var playerDamage = 15;
     return Math.min(playerDamage, game.global.enemyHP);
   },
 
