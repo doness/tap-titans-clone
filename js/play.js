@@ -1,10 +1,13 @@
 var playState = {
 
   create: function() {
+    this.emptyHpBar = game.add.sprite(game.world.centerX, 45, 'emptyHpBar');
+    this.emptyHpBar.anchor.setTo(0.5, 0);
+
     this.tapsLabel        = game.add.text(10, 30, 'taps: ' + game.global.taps, { font: '14px Arial', fill: '#ffffff' });
     this.enemyNumberLabel = game.add.text(300, 30, game.global.enemyNumber + ' / ' + this.calculateTotalEnemy(), { font: '14px Arial', fill: '#ffffff' });
-    this.levelLabel       = game.add.text(game.world.centerX, 30, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
-    this.enemyHPLabel     = game.add.text(game.world.centerX, 50, 'enemyHP: ' + game.global.enemyHP, { font: '14px Arial', fill: '#ffffff' });
+    this.levelLabel       = game.add.text(game.world.centerX, 10, 'level: ' + game.global.level, { font: '14px Arial', fill: '#ffffff' });
+    this.enemyHPLabel     = game.add.text(game.world.centerX, 48, game.global.enemyHP + ' HP', { font: '12px Arial', fill: '#000000' });
     this.coinsLabel       = game.add.text(game.world.centerX, 70, 'coins: ' + game.global.coins, { font: '14px Arial', fill: '#ffffff' });
     this.coinsLabelIcon   = game.add.sprite(this.coinsLabel.x - 45, this.coinsLabel.y, 'coin');
 
@@ -63,7 +66,7 @@ var playState = {
     var newEnemyHP = this.calculateEnemyHP(enemyType);
     game.global.enemyHPTotal = newEnemyHP;
     game.global.enemyHP = newEnemyHP;
-    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
+    this.enemyHPLabel.text =  game.global.enemyHP + ' HP';
   },
 
   calculateTotalEnemy: function() {
@@ -105,7 +108,7 @@ var playState = {
     var playerDamage = this.calculatePlayerDamage();
     this.displayDamage(playerDamage);
     game.global.enemyHP -= playerDamage;
-    this.enemyHPLabel.text = 'enemyHP: ' + game.global.enemyHP;
+    this.enemyHPLabel.text =  game.global.enemyHP + ' HP';
   },
 
   removeCoin: function(coin) {
