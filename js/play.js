@@ -51,32 +51,32 @@ var playState = {
   },
 
   removeMenu: function() {
-    game.add.tween(this.menu).to({y: game.world.height}, 300).start();
-    this.menu.kill();
-    this.menuCloseButton.kill();
-    // this.heroNameLabel.kill();
-    // this.skillLabel.kill();
+    game.add.tween(this.menuGroup).to({y: game.world.height / 2}, 300).start();
   },
 
   displayMenu: function(item) {
-    console.log(item.key);
     this.menu = game.add.sprite(game.world.centerX, game.world.height, 'menu');
-    this.menuGroup.add(this.menu);
     this.menu.anchor.setTo(0.5, 0);
-    this.menuCloseButton = game.add.sprite(game.world.width, game.world.centerY, 'menuCloseButton');
+    this.menuGroup.add(this.menu);
+
+    this.menuCloseButton = game.add.sprite(game.world.width, game.world.height, 'menuCloseButton');
     this.menuCloseButton.anchor.setTo(1, 0);
     this.menuCloseButton.inputEnabled = true;
     this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
-    this.heroNameLabel = game.add.text(game.world.centerX, game.world.centerY + 40, game.global.player.name + ' lvl: ' + game.global.player.level, { font: '14px Arial', fill: '#ffffff' });
+    this.menuGroup.add(this.menuCloseButton);
+
+    this.heroNameLabel = game.add.text(game.world.centerX, game.world.height + 40, game.global.player.name + ' lvl: ' + game.global.player.level, { font: '14px Arial', fill: '#ffffff' });
     this.heroNameLabel.anchor.setTo(0.5, 0.5);
+    this.menuGroup.add(this.heroNameLabel);
+
     for (var i = 0; i < 6; i++) {
       var text = 'skill ' + i + '  lvl ' + game.global.player.skillLevel[i];
-      this.skillLabel = game.add.text(game.world.centerX, game.world.centerY + 60 + i * 20, text, { font: '14px Arial', fill: '#ffffff' });
+      this.skillLabel = game.add.text(game.world.centerX, game.world.height + 60 + i * 20, text, { font: '14px Arial', fill: '#ffffff' });
       this.skillLabel.anchor.setTo(0.5, 0.5);
+      this.menuGroup.add(this.skillLabel);
     }
-    game.add.tween(this.menu).to({y: game.world.centerY}, 300).start();
-    // game.add.tween(this.menuGroup._container).to({y: game.world.centerY}, 300).start();
-    console.log(this.menuGroup.position);
+
+    game.add.tween(this.menuGroup).to({y: -game.world.height / 2}, 300).start();
   },
 
   update: function() {
