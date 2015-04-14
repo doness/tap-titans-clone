@@ -51,7 +51,12 @@ var playState = {
   },
 
   removeMenu: function() {
-    game.add.tween(this.menuGroup).to({y: game.world.height / 2}, 300).start();
+    var removeMenuTween = game.add.tween(this.menuGroup).to({y: game.world.height / 2}, 300).start();
+    removeMenuTween.onComplete.add(function(){
+      this.menuGroup.forEachAlive(function(element){
+        element.kill();
+      });
+    }, this);
   },
 
   displayMenu: function(item) {
