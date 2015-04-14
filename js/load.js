@@ -12,6 +12,8 @@ var loadState = {
     game.load.image('button3', 'assets/button3.png');
     game.load.image('button4', 'assets/button4.png');
 
+    game.load.image('menu', 'assets/menu.png');
+
     game.load.image('emptyHpBar', 'assets/emptyhpbar.png');
     game.load.image('fullHpBar', 'assets/fullhpbar.png');
 

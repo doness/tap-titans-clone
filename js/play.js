@@ -1,6 +1,11 @@
 var playState = {
 
   create: function() {
+    this.ground = game.add.sprite(0, game.world.centerY, 'ground');
+    this.ground.anchor.setTo(0, 0);
+    game.physics.arcade.enable(this.ground);
+    this.ground.body.immovable = true;
+
     this.emptyHpBar = game.add.sprite(game.world.centerX, 45, 'emptyHpBar');
     this.fullHpBar = game.add.sprite(game.world.centerX - 100, 45, 'fullHpBar');
     this.emptyHpBar.anchor.setTo(0.5, 0);
@@ -21,20 +26,18 @@ var playState = {
 
     this.coins = game.add.group();
     this.coins.enableBody = true;
-    this.coins.createMultiple(500, "coin");
+    this.coins.createMultiple(100, "coin");
     this.coins.setAll('anchor.x', 0.5);
     this.coins.setAll('anchor.y', 1);
     this.coins.setAll('checkWorldBounds', true);
 
-    this.ground = game.add.sprite(0, game.world.centerY, 'ground');
-    this.ground.anchor.setTo(0, 0);
-    game.physics.arcade.enable(this.ground);
-    this.ground.body.immovable = true;
+    this.menus = game.add.group();
+    this.menus.createMultiple(1, "menu");
 
     this.button1 = game.add.sprite(0, game.world.height, 'button1');
     this.button1.inputEnabled = true;
     this.button1.anchor.setTo(0, 1);
-    // this.button1.events.onInputDown.add(this.fap(), this);
+    this.button1.events.onInputDown.add(this.menu, this);
     this.button2 = game.add.sprite(this.button1.width + 5, game.world.height, 'button2');
     this.button2.inputEnabled = true;
     this.button2.anchor.setTo(0, 1);
@@ -50,6 +53,13 @@ var playState = {
 
     game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(this.tapCheck, this);
     game.input.onDown.add(this.tapCheck, this);
+  },
+
+  menu: function() {
+    this.menu = this.menus.getFirstDead();
+    this.menu.reset(game.world.centerX, game.world.height);
+    this.menu.anchor.setTo(0.5, 0);
+    game.add.tween(this.menu).to({y: game.world.centerY}, 300).start();
   },
 
   update: function() {
