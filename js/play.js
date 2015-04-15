@@ -6,6 +6,14 @@ var playState = {
     game.physics.arcade.enable(this.ground);
     this.ground.body.immovable = true;
 
+    var displayDamageBackground = game.add.sprite(game.world.centerX, game.world.centerY + 150, 'displayDamageBackground');
+    displayDamageBackground.anchor.setTo(0.5, 0);
+
+    for (i = 0; i < 6; i++) {
+      this.playerSkill = game.add.sprite(15 + i * 60, game.world.centerY + 240, 'playerSkill');
+      this.playerSkill.anchor.setTo(0, 0);
+    }
+
     this.emptyHpBar = game.add.sprite(game.world.centerX, 45, 'emptyHpBar');
     this.fullHpBar = game.add.sprite(game.world.centerX - 100, 45, 'fullHpBar');
     this.emptyHpBar.anchor.setTo(0.5, 0);
@@ -70,15 +78,43 @@ var playState = {
     this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
     this.menuGroup.add(this.menuCloseButton);
 
+    this.menuScrollableBackground = game.add.sprite(game.world.width, game.world.height + 46, 'menuScrollableBackground');
+    this.menuScrollableBackground.anchor.setTo(1, 0);
+    this.menuGroup.add(this.menuScrollableBackground);
+
     if (button.key === 'button0') {
-      this.heroNameLabel = game.add.text(game.world.centerX, game.world.height + 40, game.global.player.name + ' lvl: ' + game.global.player.level, { font: '14px Arial', fill: '#ffffff' });
-      this.heroNameLabel.anchor.setTo(0.5, 0.5);
+      this.menuItemBackground = game.add.sprite(game.world.centerX + 10, game.world.height + 56, 'menuItemBackground');
+      this.menuItemBackground.anchor.setTo(0.5, 0);
+      this.menuGroup.add(this.menuItemBackground);
+
+      this.icon = game.add.sprite(33, game.world.height + 61, 'icon');
+      this.icon.anchor.setTo(0, 0);
+      this.menuGroup.add(this.icon);
+
+      this.playerUpgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 61, 'menuButton0');
+      this.playerUpgradeButton.anchor.setTo(1, 0);
+      this.menuGroup.add(this.playerUpgradeButton);
+
+      this.heroNameLabel = game.add.text(78, game.world.height + 61, game.global.player.name + '\nlvl: ' + game.global.player.level, { font: '12px Arial', fill: '#ffffff' });
+      this.heroNameLabel.anchor.setTo(0, 0);
       this.menuGroup.add(this.heroNameLabel);
 
       for (var i = 0; i < 6; i++) {
-        var text = 'skill ' + i + '  lvl ' + game.global.player.skillLevel[i];
-        this.skillLabel = game.add.text(game.world.centerX, game.world.height + 60 + i * 20, text, { font: '14px Arial', fill: '#ffffff' });
-        this.skillLabel.anchor.setTo(0.5, 0.5);
+        this.menuItemBackground = game.add.sprite(game.world.centerX + 10, game.world.height + 116 + i * 60, 'menuItemBackground');
+        this.menuItemBackground.anchor.setTo(0.5, 0);
+        this.menuGroup.add(this.menuItemBackground);
+
+        this.icon = game.add.sprite(33, game.world.height + 121 + i * 60, 'icon');
+        this.icon.anchor.setTo(0, 0);
+        this.menuGroup.add(this.icon);
+
+        this.playerUpgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 121 + i * 60, 'menuButton0');
+        this.playerUpgradeButton.anchor.setTo(1, 0);
+        this.menuGroup.add(this.playerUpgradeButton);
+
+        var text = 'skill ' + i + '\nlvl ' + game.global.player.skillLevel[i];
+        this.skillLabel = game.add.text(78, game.world.height + 121 + i * 60, text, { font: '12px Arial', fill: '#ffffff' });
+        this.skillLabel.anchor.setTo(0, 0);
         this.menuGroup.add(this.skillLabel);
       }
     }
