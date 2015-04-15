@@ -9,7 +9,7 @@ game.global = {
   enemyNumber: 1,
   coins: 0,
   player: {
-    name: 'hero',
+    name: 'mr. hero',
     level: 1,
     skillLevel: [0, 0, 0, 0, 0, 0]
   }
