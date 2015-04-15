@@ -14,9 +14,9 @@ game.global = {
   },
   menu: {
     menu0Level: [1, 0, 0, 0, 0, 0, 0],
-    menu1Level: [0, 0, 0, 0, 0, 0],
-    menu2Level: [0, 0, 0, 0, 0, 0],
-    menu3Level: [0, 0, 0, 0, 0, 0],
+    menu1Level: [2, 0, 0, 0, 0, 0],
+    menu2Level: [3, 0, 0, 0, 0, 0],
+    menu3Level: [4, 0, 0, 0, 0, 0],
   }
 };
 
