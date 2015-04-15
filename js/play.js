@@ -59,7 +59,7 @@ var playState = {
     }, this);
   },
 
-  displayMenu: function(item) {
+  displayMenu: function(button) {
     this.menu = game.add.sprite(game.world.centerX, game.world.height, 'menu');
     this.menu.anchor.setTo(0.5, 0);
     this.menuGroup.add(this.menu);
@@ -70,15 +70,17 @@ var playState = {
     this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
     this.menuGroup.add(this.menuCloseButton);
 
-    this.heroNameLabel = game.add.text(game.world.centerX, game.world.height + 40, game.global.player.name + ' lvl: ' + game.global.player.level, { font: '14px Arial', fill: '#ffffff' });
-    this.heroNameLabel.anchor.setTo(0.5, 0.5);
-    this.menuGroup.add(this.heroNameLabel);
+    if (button.key === 'button0') {
+      this.heroNameLabel = game.add.text(game.world.centerX, game.world.height + 40, game.global.player.name + ' lvl: ' + game.global.player.level, { font: '14px Arial', fill: '#ffffff' });
+      this.heroNameLabel.anchor.setTo(0.5, 0.5);
+      this.menuGroup.add(this.heroNameLabel);
 
-    for (var i = 0; i < 6; i++) {
-      var text = 'skill ' + i + '  lvl ' + game.global.player.skillLevel[i];
-      this.skillLabel = game.add.text(game.world.centerX, game.world.height + 60 + i * 20, text, { font: '14px Arial', fill: '#ffffff' });
-      this.skillLabel.anchor.setTo(0.5, 0.5);
-      this.menuGroup.add(this.skillLabel);
+      for (var i = 0; i < 6; i++) {
+        var text = 'skill ' + i + '  lvl ' + game.global.player.skillLevel[i];
+        this.skillLabel = game.add.text(game.world.centerX, game.world.height + 60 + i * 20, text, { font: '14px Arial', fill: '#ffffff' });
+        this.skillLabel.anchor.setTo(0.5, 0.5);
+        this.menuGroup.add(this.skillLabel);
+      }
     }
 
     game.add.tween(this.menuGroup).to({y: -game.world.height / 2}, 300).start();
