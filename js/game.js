@@ -11,7 +11,12 @@ game.global = {
   player: {
     name: 'mr. hero',
     level: 1,
-    skillLevel: [0, 0, 0, 0, 0, 0]
+  },
+  menu: {
+    menu0Level: [1, 0, 0, 0, 0, 0, 0],
+    menu1Level: [0, 0, 0, 0, 0, 0],
+    menu2Level: [0, 0, 0, 0, 0, 0],
+    menu3Level: [0, 0, 0, 0, 0, 0],
   }
 };
 

@@ -42,12 +42,25 @@ var playState = {
 
     this.menuGroup = game.add.group();
 
+    this.menu0Group = game.add.group();
+    this.menu1Group = game.add.group();
+    this.menu2Group = game.add.group();
+    this.menu3Group = game.add.group();
+
+    this.generateMenus();
+
+
+    // game.global.menu.forEach(function(key, index){
+    //   generateMenuItem(game.global.menu[key], "menu" + index + "Group");
+    // });
+
     this.menuButtons = game.add.group();
     for (var i = 0; i < 4; i++ ) {
-      var button = game.add.sprite(90*i + 5*i, game.world.height, 'button' + i);
+      var button = game.add.sprite(90*i + 5*i, game.world.height, 'menu' + i);
       button.anchor.setTo(0, 1);
       this.menuButtons.add(button);
     }
+
     this.menuButtons.setAll('inputEnabled', true);
     this.menuButtons.callAll('events.onInputDown.add', 'events.onInputDown', this.displayMenu, this);
 
@@ -82,44 +95,39 @@ var playState = {
     this.menuScrollableBackground.anchor.setTo(1, 0);
     this.menuGroup.add(this.menuScrollableBackground);
 
-    if (button.key === 'button0') {
-      this.menuItemBackground = game.add.sprite(game.world.centerX + 10, game.world.height + 56, 'menuItemBackground');
-      this.menuItemBackground.anchor.setTo(0.5, 0);
-      this.menuGroup.add(this.menuItemBackground);
-
-      this.icon = game.add.sprite(33, game.world.height + 61, 'icon');
-      this.icon.anchor.setTo(0, 0);
-      this.menuGroup.add(this.icon);
-
-      this.playerUpgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 61, 'menuButton0');
-      this.playerUpgradeButton.anchor.setTo(1, 0);
-      this.menuGroup.add(this.playerUpgradeButton);
-
-      this.heroNameLabel = game.add.text(78, game.world.height + 61, game.global.player.name + '\nlvl: ' + game.global.player.level, { font: '12px Arial', fill: '#ffffff' });
-      this.heroNameLabel.anchor.setTo(0, 0);
-      this.menuGroup.add(this.heroNameLabel);
-
-      for (var i = 0; i < 6; i++) {
-        this.menuItemBackground = game.add.sprite(game.world.centerX + 10, game.world.height + 116 + i * 60, 'menuItemBackground');
-        this.menuItemBackground.anchor.setTo(0.5, 0);
-        this.menuGroup.add(this.menuItemBackground);
-
-        this.icon = game.add.sprite(33, game.world.height + 121 + i * 60, 'icon');
-        this.icon.anchor.setTo(0, 0);
-        this.menuGroup.add(this.icon);
-
-        this.playerUpgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 121 + i * 60, 'menuButton0');
-        this.playerUpgradeButton.anchor.setTo(1, 0);
-        this.menuGroup.add(this.playerUpgradeButton);
-
-        var text = 'skill ' + i + '\nlvl ' + game.global.player.skillLevel[i];
-        this.skillLabel = game.add.text(78, game.world.height + 121 + i * 60, text, { font: '12px Arial', fill: '#ffffff' });
-        this.skillLabel.anchor.setTo(0, 0);
-        this.menuGroup.add(this.skillLabel);
-      }
-    }
+    this.menuGroup.add("menu" + button.key + "Group");
+    // this.displayMenuItem(game.global[button.key + "Level"]);
 
     game.add.tween(this.menuGroup).to({y: -game.world.height / 2}, 300).start();
+  },
+
+  generateMenuItem: function(array, group){
+    for (var i = 0; i < array.length; i++) {
+      this.menuItemBackground = game.add.sprite(game.world.centerX + 10, game.world.height + 56 + i * 60, 'menuItemBackground');
+      this.menuItemBackground.anchor.setTo(0.5, 0);
+      this[group].add(this.menuItemBackground);
+
+      this.icon = game.add.sprite(33, game.world.height + 61 + i * 60, 'icon');
+      this.icon.anchor.setTo(0, 0);
+      this[group].add(this.icon);
+
+      this.playerUpgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 61 + i * 60, 'menuButton0');
+      this.playerUpgradeButton.anchor.setTo(1, 0);
+      this[group].add(this.playerUpgradeButton);
+
+      var text = 'skill ' + i + '\nlvl ' + array[i];
+      this.skillLabel = game.add.text(78, game.world.height + 61 + i * 60, text, { font: '12px Arial', fill: '#ffffff' });
+      this.skillLabel.anchor.setTo(0, 0);
+      this[group].add(this.skillLabel);
+      }
+  },
+
+  generateMenus: function() {
+    var counter = 0;
+    for (var keys in game.global.menu){
+      this.generateMenuItem(game.global.menu[keys], "menu" + counter + "Group");
+      counter++;
+    }
   },
 
   update: function() {
@@ -211,7 +219,6 @@ var playState = {
     for (var i = 0; i < coinsNumber; i++) {
       var coin = this.coins.getFirstDead();
       coin.body.collideWorldBounds = true;
-      coin.anchor.setTo(0.5, 1);
       coin.reset(this.enemy.x, this.enemy.y - this.enemy.height / 2);
       game.physics.arcade.enable(coin);
       coin.body.bounce.set(0.3);
