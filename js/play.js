@@ -41,13 +41,31 @@ var playState = {
     this.coins.setAll('checkWorldBounds', true);
 
     this.menuGroup = game.add.group();
+    this.menu = game.add.sprite(game.world.centerX, game.world.height, 'menu');
+    this.menu.anchor.setTo(0.5, 0);
+    this.menuGroup.add(this.menu);
+
+    this.menuCloseButton = game.add.sprite(game.world.width, game.world.height, 'menuCloseButton');
+    this.menuCloseButton.anchor.setTo(1, 0);
+    this.menuCloseButton.inputEnabled = true;
+    this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
+    this.menuGroup.add(this.menuCloseButton);
+
+    this.menuScrollableBackground = game.add.sprite(game.world.width, game.world.height + 46, 'menuScrollableBackground');
+    this.menuScrollableBackground.anchor.setTo(1, 0);
+    this.menuGroup.add(this.menuScrollableBackground);
 
     this.menu0Group = game.add.group();
     this.menu1Group = game.add.group();
     this.menu2Group = game.add.group();
     this.menu3Group = game.add.group();
 
+    this.menuMask = game.add.graphics(0, game.world.height / 2);
+    this.menuMask.beginFill(0xffffff);
+    this.menuMask.drawRect(0, 0 ,game.world.width, game.world.height / 2);
+
     this.generateMenus();
+    this.menu0Group.mask = this.menuMask;
 
     this.menuButtons = game.add.group();
     for (var i = 0; i < 4; i++ ) {
@@ -72,7 +90,9 @@ var playState = {
 
   displayMenu: function(button) {
     this.menuGroup.forEachAlive(function(element){
-      this.menuGroup.remove(element);
+      if ( ["menu", "menuScrollableBackground", "menuCloseButton"].indexOf(element.key) < 0){
+        this.menuGroup.remove(element);
+      }
     }, this);
     this.menuGroup.add(this[button.key + "Group"]);
     game.add.tween(this.menuGroup).to({y: -game.world.height / 2}, 300).start();
@@ -102,20 +122,6 @@ var playState = {
   generateMenus: function() {
     var counter = 0;
     for (var keys in game.global.menu){
-      this.menu = game.add.sprite(game.world.centerX, game.world.height, 'menu');
-      this.menu.anchor.setTo(0.5, 0);
-      this["menu" + counter + "Group"].add(this.menu);
-
-      this.menuCloseButton = game.add.sprite(game.world.width, game.world.height, 'menuCloseButton');
-      this.menuCloseButton.anchor.setTo(1, 0);
-      this.menuCloseButton.inputEnabled = true;
-      this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
-      this["menu" + counter + "Group"].add(this.menuCloseButton);
-
-      this.menuScrollableBackground = game.add.sprite(game.world.width, game.world.height + 46, 'menuScrollableBackground');
-      this.menuScrollableBackground.anchor.setTo(1, 0);
-      this["menu" + counter + "Group"].add(this.menuScrollableBackground);
-
       this.generateMenuItem(game.global.menu[keys], "menu" + counter + "Group");
       counter++;
     }
