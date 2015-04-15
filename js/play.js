@@ -84,16 +84,21 @@ var playState = {
     game.input.onDown.add(this.tapCheck, this);
   },
 
-  removeMenu: function() {
-    game.add.tween(this.menuGroup).to({y: game.world.height / 2}, 300).start();
-  },
-
-  displayMenu: function(button) {
+  clearSubMenuGroup: function(){
     this.menuGroup.forEachAlive(function(element){
       if ( ["menu", "menuScrollableBackground", "menuCloseButton"].indexOf(element.key) < 0){
         this.menuGroup.remove(element);
       }
     }, this);
+  },
+
+  removeMenu: function() {
+    game.add.tween(this.menuGroup).to({y: game.world.height / 2}, 300).start();
+    this.clearSubMenuGroup();
+  },
+
+  displayMenu: function(button) {
+    this.clearSubMenuGroup();
     this.menuGroup.add(this[button.key + "Group"]);
     game.add.tween(this.menuGroup).to({y: -game.world.height / 2}, 300).start();
   },
@@ -187,6 +192,9 @@ var playState = {
   },
 
   attackEnemy: function() {
+    if (!this.enemy.alive){
+      return;
+    }
     var playerDamage = this.calculatePlayerDamage();
     this.displayDamage(playerDamage);
     game.global.enemyHP -= playerDamage;
@@ -224,7 +232,7 @@ var playState = {
       coin.body.velocity.y = -500;
       coin.body.velocity.x = Math.random() * 150 * util.plusOrMinus();
       coin.gold = Math.ceil( game.global.enemyHPTotal * (0.02 + (0.00045 * Math.min(game.global.level, 150))) );
-      game.time.events.add(3000, this.removeCoin, this, coin);
+      game.time.events.add(5000, this.removeCoin, this, coin);
     }
     this.coins.setAll('inputEnabled', true);
     this.coins.callAll('events.onInputDown.add', 'events.onInputDown', this.removeCoin);
@@ -260,13 +268,13 @@ var playState = {
   },
 
   tapCheck: function() {
-    this.displayTap(game.input.x,game.input.y);
-    if (this.enemy.alive) {
+    console.log(this.menuGroup);
+    if (this.menuGroup.length === 3 && game.input.y < 565 || this.menuGroup.length > 3 && game.input.y < game.world.height / 2){
+      this.displayTap(game.input.x,game.input.y);
       this.attackEnemy();
-      if (game.global.enemyHP === 0) {
+      if (game.global.enemyHP === 0){
         this.removeEnemy();
       }
     }
   },
-
 };
