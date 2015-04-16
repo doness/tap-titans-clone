@@ -99,8 +99,8 @@ var playState = {
     game.add.tween(this.menuGroup).to({y: -game.world.height / 2}, 300).start();
   },
 
-  generateMenuItem: function(array, group){
-    for (var i = 0; i < array.length; i++) {
+  generateMenuItem: function(baseDataArray, currentDataArray, group){
+    for (var i = 0; i < baseDataArray.length; i++) {
       this.menuItemBackground = game.add.sprite(game.world.centerX + 10, game.world.height + 56 + i * 60, 'menuItemBackground');
       this.menuItemBackground.anchor.setTo(0.5, 0);
       this[group].add(this.menuItemBackground);
@@ -109,11 +109,13 @@ var playState = {
       this.icon.anchor.setTo(0, 0);
       this[group].add(this.icon);
 
-      this.playerUpgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 61 + i * 60, 'menuButton0');
-      this.playerUpgradeButton.anchor.setTo(1, 0);
-      this[group].add(this.playerUpgradeButton);
+      this.upgradeButton = game.add.sprite(game.world.width - 12, game.world.height + 61 + i * 60, 'menuButton0');
+      this.upgradeButton.anchor.setTo(1, 0);
+      this[group].add(this.upgradeButton);
+      this.upgradeButton.inputEnabled = true;
+      this.upgradeButton.events.onInputDown.add(function(item){console.log("clicked",item);}, this);
 
-      var text = 'skill ' + i + '\nlvl ' + array[i];
+      var text = baseDataArray[i].name + '\nlvl ' + currentDataArray[i];
       this.skillLabel = game.add.text(78, game.world.height + 61 + i * 60, text, { font: '12px Arial', fill: '#ffffff' });
       this.skillLabel.anchor.setTo(0, 0);
       this[group].add(this.skillLabel);
@@ -123,7 +125,7 @@ var playState = {
   generateMenus: function() {
     var counter = 0;
     for (var keys in game.global.menu){
-      this.generateMenuItem(game.global.menu[keys], "menu" + counter + "Group");
+      this.generateMenuItem(game.global.baseMenu[keys], game.global.menu[keys], "menu" + counter + "Group");
       counter++;
     }
   },

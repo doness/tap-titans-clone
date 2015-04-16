@@ -8,13 +8,15 @@ game.global = {
   level: 1,
   enemyNumber: 1,
   coins: 0,
-  player: {
-    name: 'mr. hero',
-    level: 1,
-  },
   menu: {
-    menu0Level: [1, 0, 0, 0, 0, 0, 0],
+    menu0Level: [1, 0, 0, 0, 0, 0],
     menu1Level: [2, 0, 0, 0, 0, 0],
+    menu2Level: [3, 0, 0, 0, 0, 0],
+    menu3Level: [4, 0, 0, 0, 0, 0],
+  },
+  baseMenu: {
+    menu0Level: data.playerSkills,
+    menu1Level: data.hero,
     menu2Level: [3, 0, 0, 0, 0, 0],
     menu3Level: [4, 0, 0, 0, 0, 0],
   }
