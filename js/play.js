@@ -265,7 +265,6 @@ var playState = {
 
   tapCheck: function() {
     console.log(this.menuGroup);
-    console.log(data.HeroInfo);
     if (this.menuGroup.length === 2 && game.input.y < 565 || this.menuGroup.length > 2 && game.input.y < game.world.height / 2){
       this.displayTap(game.input.x,game.input.y);
       this.attackEnemy();
