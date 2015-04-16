@@ -14,7 +14,6 @@ var loadState = {
 
     game.load.image('menu', 'assets/menu.png');
     game.load.image('menuCloseButton', 'assets/menu-close.png');
-    game.load.image('menuScrollableBackground', 'assets/menu-scrollable-background.png');
     game.load.image('menuItemBackground', 'assets/menu-item-background.png');
     game.load.image('menuButton0', 'assets/menubutton.png');
     game.load.image('menuButton1', 'assets/menubutton.png');

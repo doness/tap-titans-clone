@@ -51,10 +51,6 @@ var playState = {
     this.menuCloseButton.events.onInputDown.add(this.removeMenu, this);
     this.menuGroup.add(this.menuCloseButton);
 
-    this.menuScrollableBackground = game.add.sprite(game.world.width, game.world.height + 46, 'menuScrollableBackground');
-    this.menuScrollableBackground.anchor.setTo(1, 0);
-    this.menuGroup.add(this.menuScrollableBackground);
-
     this.menu0Group = game.add.group();
     this.menu1Group = game.add.group();
     this.menu2Group = game.add.group();
@@ -86,7 +82,7 @@ var playState = {
 
   clearSubMenuGroup: function(){
     this.menuGroup.forEachAlive(function(element){
-      if ( ["menu", "menuScrollableBackground", "menuCloseButton"].indexOf(element.key) < 0){
+      if ( ["menu", "menuCloseButton"].indexOf(element.key) < 0){
         this.menuGroup.remove(element);
       }
     }, this);
@@ -269,7 +265,7 @@ var playState = {
 
   tapCheck: function() {
     console.log(this.menuGroup);
-    if (this.menuGroup.length === 3 && game.input.y < 565 || this.menuGroup.length > 3 && game.input.y < game.world.height / 2){
+    if (this.menuGroup.length === 2 && game.input.y < 565 || this.menuGroup.length > 2 && game.input.y < game.world.height / 2){
       this.displayTap(game.input.x,game.input.y);
       this.attackEnemy();
       if (game.global.enemyHP === 0){
